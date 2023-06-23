@@ -1,0 +1,1 @@
+# Calendar organizer made with Spring Boot (Kotlin) and Svelte (Javascript)
