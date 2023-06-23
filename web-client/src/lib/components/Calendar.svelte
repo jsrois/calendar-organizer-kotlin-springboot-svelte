@@ -1,5 +1,7 @@
 <script>
 
+    import Day from "./Day.svelte";
+
     const getAllDaysInMonth = (month, year) =>
         Array.from(
             {length: new Date(year, month, 0).getDate()},
@@ -23,36 +25,34 @@
             monthDay: i
         }))
 
-    let fn = (acc, currentValue) => {
+    let fn = (acc, currentValue, _, originalArray) => {
         if (acc.length === 0) {
-            console.log(".")
             let week = new Array(currentValue.weekDay)
             return [[...week, currentValue]]
         }
 
         if (currentValue.weekDay === 0) {
-            console.log("x")
             return [...acc, [currentValue]];
         }
         let currentWeek = acc[acc.length - 1];
         currentWeek = [...currentWeek, currentValue];
+        if (originalArray[originalArray.length - 1] === currentValue) {
+            currentWeek = [...currentWeek, ...(new Array(6 - currentValue.weekDay))];
+            console.log(currentWeek)
+        }
         acc[acc.length - 1] = currentWeek;
-        console.log('o');
+
         return acc;
     }
 
-    let datesOrganized = days.reduce(fn, [])
+    let weeks = days.reduce(fn, [])
 
 </script>
 <section>
-    {#each datesOrganized as week}
+    {#each weeks as week}
         <div class="week">
             {#each week as day}
-                {#if day}
-                    <div class="day">{day.monthDay + 1}</div>
-                {:else }
-                    <div class="day empty"></div>
-                {/if}
+                <Day {day}/>
             {/each}
         </div>
     {/each}
@@ -67,12 +67,6 @@
     .week {
         display: flex;
         justify-content: flex-start;
-    }
-
-    .day {
-        width: 100px;
-        height: 100px;
-        border: 1px solid black;
     }
 </style>
 
